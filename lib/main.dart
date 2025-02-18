@@ -1,4 +1,4 @@
-import 'package:expense_tracker/expenses.dart';
+import 'package:expense_tracker/widgets/expenses_list/expenses_list.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,8 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home:ExpensesScreen(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.purple),
+      home: ExpensesScreen(),
     );
   }
 }

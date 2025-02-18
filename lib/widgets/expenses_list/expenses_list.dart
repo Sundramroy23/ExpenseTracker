@@ -11,37 +11,27 @@ class ExpensesScreen extends StatefulWidget {
 }
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
+  List<Expense> expenses = [];
+
+  void _addExpense(Expense expense) {
+    setState(() {
+      expenses.add(expense);
+    });
+  }
+
   void _onpressed() {
     showModalBottomSheet(
       context: context,
       builder: (context) => SizedBox(
         height: MediaQuery.sizeOf(context).height,
         width: double.infinity,
-        child: AddExpense(),
+        child: AddExpense(
+          expenses: expenses,
+          onAddExpense: _addExpense,
+        ),
       ),
     );
   }
-
-  List<Expense> expenses = [
-    Expense(
-      title: "Flutter Course",
-      amount: 19.99,
-      date: DateTime.now(),
-      category: Category.work,
-    ),
-    Expense(
-      title: "Cinema",
-      amount: 15.99,
-      date: DateTime.now(),
-      category: Category.leisure,
-    ),
-    Expense(
-      title: "Pizza",
-      amount: 12.99,
-      date: DateTime.now(),
-      category: Category.food,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {

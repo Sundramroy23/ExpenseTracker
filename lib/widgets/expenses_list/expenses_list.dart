@@ -19,11 +19,39 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     });
   }
 
+  void _removeExpense(Expense expense) {
+    final expenseIndex = expenses.indexOf(expense);
+    setState(
+      () {
+        expenses.remove(expense);
+      },
+    );
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Expense Deleted!"),
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color.fromARGB(255, 234, 86, 75),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(
+              () {
+                expenses.insert(expenseIndex, expense);
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   void _onpressed() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (context) => SizedBox(
-        height: MediaQuery.sizeOf(context).height,
+        // height: MediaQuery.sizeOf(context).height,
         width: double.infinity,
         child: AddExpense(
           expenses: expenses,
@@ -31,6 +59,25 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ),
       ),
     );
+  }
+
+  Widget mainWidget() {
+    if (expenses.isNotEmpty) {
+      return ListView.builder(
+        itemCount: expenses.length,
+        itemBuilder: (context, index) => Dismissible(
+          key: ValueKey(expenses[index].id),
+          onDismissed: (direction) {
+            _removeExpense(expenses[index]);
+          },
+          child: ExpenseItem(expenses[index]),
+        ),
+      );
+    } else {
+      return const Center(
+        child: Text("No expenses added yet"),
+      );
+    }
   }
 
   @override
@@ -48,11 +95,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         children: [
           const Text("Graph Placeholder"),
           Expanded(
-            child: ListView.builder(
-              itemCount: expenses.length,
-              itemBuilder: (context, index) => ExpenseItem(expenses[index]),
-            ),
-          )
+            child: mainWidget(),
+          ),
         ],
       ),
     );
